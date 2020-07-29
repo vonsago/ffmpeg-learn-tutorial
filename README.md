@@ -3,15 +3,20 @@
 [TOC]
 
 ## HOWTO
-**env**:
+**env:**
 ```shell script
 docker run -w /root --rm -it -v `pwd`:/root/work vonsago/ffmpeg-devel bash
 ```
-**compile**:
+**compile:**
 ```shell script
 gcc -L/opt/ffmpeg/lib -I/opt/ffmpeg/include /work/0_hello_world.c \
  	  -lavcodec -lavformat -lavfilter -lavdevice -lswresample -lswscale -lavutil \
  	  -o /root/run_main
+```
+**run:**
+```shell script
+./root/run_main small_bunny_1080p_60fps.mp4 video.ts
+./root/run_main video.ts video.flv
 ```
 *docker image contains:* "ffmpeg source code", "flv_parser", "hexdump" and one ".mp4" file for test.
 ## Reference
