@@ -26,14 +26,12 @@ enum tag_types {
 /*
  * @brief flv file header 9 bytes
  */
-struct flv_header {
+typedef struct flv_header {
     uint8_t signature[3];
     uint8_t version;
     uint8_t type_flags;
     uint32_t data_offset; // header size, always 9
-} __attribute__((__packed__));
-
-typedef struct flv_header flv_header_t;
+} FLV_HEADER_T;
 
 /*
  * @brief flv tag general header 11 bytes
@@ -73,7 +71,7 @@ int flv_read_header(void);
 
 FLV_TAG_T *flv_read_tag(void);
 
-void flv_print_header(flv_header_t *flv_header);
+void flv_print_header(FLV_HEADER_T *flv_header);
 
 audio_tag_t *read_audio_tag(FLV_TAG_T *flv_tag);
 
@@ -189,7 +187,7 @@ uint8_t flv_get_bits(uint8_t value, uint8_t start_bit, uint8_t count) {
 
 }
 
-void flv_print_header(flv_header_t *flv_header) {
+void flv_print_header(FLV_HEADER_T *flv_header) {
 
     printf("FLV file version %u\n", flv_header->version);
     printf("  Contains audio tags: ");
@@ -360,16 +358,15 @@ void flv_free_tag(FLV_TAG_T *tag) {
     }
 }
 
-int flv_read_header(void) {
+int flv_read_header() {
     size_t count = 0;
-    int i = 0;
-    flv_header_t *flv_header = NULL;
+    FLV_HEADER_T *flv_header = NULL;
 
-    flv_header = malloc(sizeof(flv_header_t));
-    count = fread(flv_header, 1, sizeof(flv_header_t), g_infile);
+    flv_header = malloc(sizeof(FLV_HEADER_T));
+    count = fread(flv_header, 1, sizeof(FLV_HEADER_T), g_infile);
 
     // XXX strncmp
-    for (i = 0; i < strlen(flv_signature); i++) {
+    for (int  = 0; i < strlen(flv_signature); i++) {
         assert(flv_header->signature[i] == flv_signature[i]);
     }
 
@@ -378,7 +375,6 @@ int flv_read_header(void) {
     flv_print_header(flv_header);
 
     return 0;
-
 }
 
 void print_general_tag_info(FLV_TAG_T *tag) {
@@ -446,7 +442,7 @@ FLV_TAG_T *flv_read_tag(void) {
     return tag;
 }
 
-int flv_parser_run() {
+int parse_flv() {
     FLV_TAG_T *tag;
     flv_read_header();
 
@@ -474,7 +470,7 @@ int main(int argc, char **argv) {
     }
     g_infile = infile;
 
-    flv_parser_run();
+    parse_flv();
 
     printf("\nFinished analyzing\n");
 
