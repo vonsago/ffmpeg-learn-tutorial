@@ -366,7 +366,7 @@ int flv_read_header() {
     count = fread(flv_header, 1, sizeof(FLV_HEADER_T), g_infile);
 
     // XXX strncmp
-    for (int  = 0; i < strlen(flv_signature); i++) {
+    for (int  i = 0; i < strlen(flv_signature); i++) {
         assert(flv_header->signature[i] == flv_signature[i]);
     }
 
