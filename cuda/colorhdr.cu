@@ -1,23 +1,28 @@
 #include <stdio.h>
+#include <stdint.h>
 #include <cuda_runtime.h>
 
 
-__global__ void doGPU(float * data, float * dst_data){
-    int i = threadIdx.x;
-    printf("calc idx: i: %d\n", i);
+__global__ void doGPU(uint8_t * data, uint8_t * dst_data, int length){
+    int i = blockDim.x * blockIdx.x + threadIdx.x;
+    if(i >= length)
+        return;
     dst_data[i] = data[i];
 }
 
-int doitgpu(float * data, int width, int height, int format, float *ret) {
-    float * cuda_data;
-    float * dst_data = (float *)malloc(sizeof(data));
+int doitgpu(uint8_t * data, int width, int height, int format, uint8_t *ret, int length) {
+    uint8_t * cuda_data;
+    uint8_t * dst_data;
 
-    cudaMalloc(&cuda_data, sizeof(data));
-    cudaMemcpy(cuda_data, data, sizeof(data), cudaMemcpyHostToDevice);
+    cudaMalloc(&cuda_data, length);
+    cudaMalloc(&dst_data, length);
+    cudaMemcpy(cuda_data, data, length, cudaMemcpyHostToDevice);
 
-    doGPU <<<1, sizeof(data)>>>(cuda_data, dst_data);
+    int blocks = (length + 128-1)/128;
+    int threads = 128;
+    doGPU <<<blocks, threads>>>(cuda_data, dst_data, length);
 
-    cudaMemcpy(ret, dst_data, sizeof(data), cudaMemcpyDeviceToHost);
+    cudaMemcpy(ret, dst_data, length, cudaMemcpyDeviceToHost);
     cudaDeviceReset();
 
     return 0;
