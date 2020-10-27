@@ -258,4 +258,47 @@ have the following pattern:
    99 
   100 When in doubt, just look at the other AVOption definitions all around the codebase,
   101 there are tons of examples.
-  1
+  
+## color space
+* http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
+### HDR
+
+  	 * Nominal peak luminance (cd/m^2) for standard-dynamic range (SDR) systems.
+	 *
+	 * When a high dynamic range (HDR) transfer function is converted to linear
+	 * light, the linear values are scaled such that nominal white (L = 1.0)
+	 * matches the nominal SDR luminance. The HDR component of the signal is
+	 * represented as multiples of the SDR luminance (L > 1.0).
+	 *
+	 * Certain HDR transfer functions (e.g. ST.2084) have a defined mapping
+	 * between code values and physical luminance. When converting between
+	 * absolute and relative transfer functions, the nominal peak luminance is
+	 * used to scale the dequantized linear light values.
+
+### bit depth
+每一个RGB的色阶就是一条通道（channel），可以表达的范围就是bit depth，每条通道的bit depth被称为bpc
+
+每一个像素的bit depth（像素各个通道bit depth之和）被称为 bpp
+
+以三原色为例，一个像素有三个通道（RGB），那么bpp就是bpc的三倍
+
+### ffmpeg build
+
+https://trac.ffmpeg.org/wiki/CompilationGuide/Ubuntu
+https://hhsprings.bitbucket.io/docs/programming/examples/ffmpeg/
+
+### convert
+
+https://www.vocal.com/video/rgb-and-yuv-color-space-conversion/
+
+|   |BT.601|BT.709|BT.2020|
+|:-:|-----:|-----:|------:|
+| a | 0.299|0.2126| 0.2627|
+| b | 0.587|0.7152| 0.6780|
+| c | 0.114|0.0722| 0.0593|
+| d | 1.772|1.8556| 1.8814|
+| e | 1.402|1.5748| 1.4747|
+
+* https://www.itu.int/rec/R-REC-BT.601
+* https://www.itu.int/rec/R-REC-BT.709
+* https://www.itu.int/rec/R-REC-BT.2020
