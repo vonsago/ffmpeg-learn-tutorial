@@ -6,25 +6,37 @@ import matplotlib.pyplot as plt
 def video_compare(video1, video2):
     capture = cv2.VideoCapture(video1)
     capture2 = cv2.VideoCapture(video2)
-    counter = 0
+    counter = [0, 0, 0]
     while True:
         f, frame = capture.read()
         f2, frame2 = capture2.read()
         try:
-            # for i in range(len(frame)):
-            #   for j in range(len(frame[i])):
-            #       if(not np.array_equal(frame[i][j], frame2[i][j])):
-            #           print(frame[i][j], frame[i][j])
-            #           break
-            res = frame - frame2
-            if (np.count_nonzero(res) > 0):
-                # print('[-', frame, '--', frame2, '-]')
-                counter += 1
+            # res = frame - frame2
+            # # if (np.count_nonzero(res) > 0):
+            # #     # print('[-', frame, '--', frame2, '-]')
+            # #     counter += 1
+            h = len(frame)
+            w = len(frame[0])
+            if (len(frame2)!= len(frame) or len(frame2[0])!=len(frame[0])):
+                print("width*height error")
+                return
+            for he in range(len(frame)):
+                for wi in range(len(frame[0])):
+                    diff = frame[he][wi] - frame2[he][wi]
+                    if(np.count_nonzero(diff)>0):
+                        su_di = sum(diff)
+                        if(su_di < 5):
+                            counter[0]+=1
+                        elif(su_di>=5 and su_di<=10):
+                            counter[1]+=1
+                        else:
+                            counter[2]+=1
+                        #print(frame[he][wi], frame2[he][wi], end=",")
+                    #print()
         except Exception as e:
             print(e)
-        print(counter)
-        if not f and not f2:
-            break
+        print([i/(w*h) for i in counter])
+        return capture
 
 
 def process_image(file):
@@ -35,4 +47,4 @@ def process_image(file):
 
 
 if __name__ == "__main__":
-    video_compare("/Users/bilibili/Desktop/test1.ts", "/Users/bilibili/Desktop/test.ts")
+    video_compare("test1.ts", "test2.ts")
